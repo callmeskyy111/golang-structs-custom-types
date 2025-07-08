@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 )
@@ -27,6 +28,21 @@ func (u *User) clearUserName(){
 	u.lastName= ""
 }
 
+// constructor/creation functions
+func newUser(firstName, lastName, birthDate string)(*User,error){
+	
+	// validation
+	if firstName == "" || lastName == "" || birthDate == ""{
+		return nil, errors.New("firstName, lastName & birthDate are required")
+	}
+
+	return &User{
+		firstName:firstName,
+		lastName:lastName,
+		birthDate:birthDate,
+		createdAt: time.Now(),
+	},nil
+}
 
 
 func main() {
@@ -37,15 +53,13 @@ func main() {
 	//var appUser User{} // Empty struct
 
 	//instance of User-struct
-
-	//  var appUser User 
-	var appUser = User{
-		firstName: userFirstName,
-		lastName: userLastName,
-		birthDate: userBirthdate,
-		createdAt: time.Now(),
-	}
-
+	var appUser *User
+	  appUser, err := newUser(userFirstName, userLastName, userBirthdate)
+	  if err != nil{
+		fmt.Println("🔴 ERROR:",err)
+		return
+	  }
+	
 	// ... do something awesome with that gathered data!
 	appUser.outPutUserDetails()
 	appUser.clearUserName()
@@ -56,6 +70,6 @@ func main() {
 func getUserData(promptText string) string {
 	fmt.Print(promptText)
 	var value string
-	fmt.Scan(&value)
+	fmt.Scanln(&value)
 	return value
 }
